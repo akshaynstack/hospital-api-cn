@@ -1,22 +1,25 @@
 const express = require('express');
-const port = 5000;
-const db = require('./config/mongoose');
-
-const passport = require('passport');
-const passportJWT = require('./config/passport_jwt_strategy');
-
 const app = express();
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+// Import Routes
+const docRoute = require('./routes/doctors');
+const patientRoute = require('./routes/patients');
+const reportRoute = require('./routes/reports')
 
+dotenv.config();
+
+// Connect to DB
+mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true },
+    () => console.log("Successfully connected to DB!")
+);
+
+// Middlewares
 app.use(express.json());
-app.use(express.urlencoded({
-    extended: true
-  }));
 
-//redirecting routes
-app.use('/', require('./routes'));
+// Route Middlewares 
+app.use('/doctors', docRoute);
+app.use('/patients', patientRoute);
+app.use('/reports', reportRoute);
 
-app.listen(port, function (err) {
-    if (err) { console.log('error'); return; }
-    
-    console.log(`server is running on ${port}`);
-});
+app.listen(3000, () => console.log('Server up and running'));

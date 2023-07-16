@@ -1,32 +1,25 @@
 const mongoose = require('mongoose');
+const statuss = ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit']
 
+// Report Schema
 const reportSchema = new mongoose.Schema({
-    
-  doctor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Doctor'
-  },
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
+    patient_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: statuss,
+        required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    }
+}, { timestamps: true });
 
-  patient: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Patient'
-  },
-
-  status: {
-      type: String,
-      required: true,
-      enum: ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit']
-  },
-  
-  date: {
-      type: Date,
-      default: Date.now,
-     required:true,
-  }
-},
-  {
-  timestamps: true
-});
-
-const Report = mongoose.model('Report', reportSchema);
-module.exports = Report;
+module.exports = mongoose.model('Report', reportSchema);
